@@ -58,8 +58,8 @@ class ResnetDiscriminator128(nn.Module):
         # obj path
         # seperate different path
         s_idx = ((bbox[:, 3] - bbox[:, 1]) < 64) * ((bbox[:, 4] - bbox[:, 2]) < 64)
-        bbox_l, bbox_s = bbox[1-s_idx], bbox[s_idx]
-        y_l, y_s = y[1-s_idx], y[s_idx]
+        bbox_l, bbox_s = bbox[~s_idx], bbox[s_idx]
+        y_l, y_s = y[~s_idx], y[s_idx]
 
         obj_feat_s = self.block_obj3(x1)
         obj_feat_s = self.block_obj4(obj_feat_s)
@@ -271,7 +271,8 @@ class CombineDiscriminator256(nn.Module):
         bbox = bbox.view(-1, 5)
         label = label.view(-1)
 
-        idx = (label != 0).nonzero().view(-1)
+        #idx = (label != 0).nonzero().view(-1)
+        idx = torch.nonzero(label).view(-1)
         bbox = bbox[idx]
         label = label[idx]
         d_out_img, d_out_obj = self.obD(images, label, bbox)
@@ -294,7 +295,8 @@ class CombineDiscriminator128(nn.Module):
         bbox = bbox.view(-1, 5)
         label = label.view(-1)
 
-        idx = (label != 0).nonzero().view(-1)
+        #idx = (label != 0).nonzero().view(-1)
+        idx = torch.nonzero(label).view(-1)
         bbox = bbox[idx]
         label = label[idx]
         d_out_img, d_out_obj = self.obD(images, label, bbox)
@@ -317,7 +319,8 @@ class CombineDiscriminator64(nn.Module):
         bbox = bbox.view(-1, 5)
         label = label.view(-1)
 
-        idx = (label != 0).nonzero().view(-1)
+        #idx = (label != 0).nonzero().view(-1)
+        idx = torch.nonzero(label).view(-1)
         bbox = bbox[idx]
         label = label[idx]
         d_out_img, d_out_obj = self.obD(images, label, bbox)

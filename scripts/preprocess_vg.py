@@ -19,7 +19,7 @@ from collections import Counter, defaultdict
 
 import numpy as np
 import h5py
-from scipy.misc import imread, imresize
+#from scipy.misc import imread, imresize
 
 
 """
@@ -30,7 +30,8 @@ fully-connected.
 """
 
 
-VG_DIR = '../../datasets/vg'
+#VG_DIR = '../../datasets/vg'
+VG_DIR = '/workspaces/LostGANs/datasets/vg'
 
 parser = argparse.ArgumentParser()
 

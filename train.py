@@ -22,14 +22,15 @@ from utils.logger import setup_logger
 
 def get_dataset(dataset, img_size):
     if dataset == "coco":
-        data = CocoSceneGraphDataset(image_dir='./datasets/coco/train2017/',
+        data = CocoSceneGraphDataset(image_dir='/workspaces/LostGANs/datasets/coco/images/train2017/',
                                         instances_json='./datasets/coco/annotations/instances_train2017.json',
                                         stuff_json='./datasets/coco/annotations/stuff_train2017.json',
                                         stuff_only=True, image_size=(img_size, img_size), left_right_flip=True)
     elif dataset == 'vg':
-        data = VgSceneGraphDataset(vocab=vocab, h5_path='./datasets/vg/train.h5',
-                                      image_dir='./datasets/vg/images/',
-                                      image_size=(img_size, img_size), max_objects=10, left_right_flip=True)
+        data = VgSceneGraphDataset(vocab=vocab, h5_path='/workspaces/LostGANs/datasets/vg/train.h5',
+                                      image_dir='/workspaces/LostGANs/datasets/vg/images/',
+                                      image_size=(img_size, img_size), max_objects=10, left_right_flip=True,
+                                      max_samples=10)
     return data
 
 
@@ -156,7 +157,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', type=str, default='coco',
                         help='training dataset')
-    parser.add_argument('--batch_size', type=int, default=128,
+    parser.add_argument('--batch_size', type=int, default=48,
                         help='mini-batch size of training data. Default: 32')
     parser.add_argument('--total_epoch', type=int, default=200,
                         help='number of total training epoch')

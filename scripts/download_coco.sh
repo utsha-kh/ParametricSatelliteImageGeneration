@@ -1,5 +1,5 @@
-#!/bin/bash -eu
-#
+#!/bin/bash
+
 # Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,4 +26,3 @@ unzip $COCO_DIR/annotations_trainval2017.zip -d $COCO_DIR
 unzip $COCO_DIR/stuff_annotations_trainval2017.zip -d $COCO_DIR
 unzip $COCO_DIR/train2017.zip -d $COCO_DIR/images
 unzip $COCO_DIR/val2017.zip -d $COCO_DIR/images
-#!/usr/bin/env bash

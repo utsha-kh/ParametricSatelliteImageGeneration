@@ -31,36 +31,40 @@ def move_ship(im, label, angle):
 def rotate_ship(im, bbx, angle, border=0):
     ship = im.copy()[bbx[1] - border: bbx[1] + bbx[3] + border, 
                      bbx[0] - border : bbx[0] + bbx[2] + border]
-
+    ship_mask = np.zeros(ship.shape, dtype=np.uint8)
+    ship_mask[2:-2,2:-2] = 255
+    
     (h, w) = ship.shape[:2]
     (cX, cY) = (w / 2, h / 2)
-
+    
     # grab the rotation matrix (applying the negative of the
     # angle to rotate clockwise), then grab the sine and cosine
     # (i.e., the rotation components of the matrix)
     M = cv2.getRotationMatrix2D((cX, cY), -angle, 1.0)
     cos = np.abs(M[0, 0])
     sin = np.abs(M[0, 1])
-
+    
     # compute the new bounding dimensions of the image
     nW = int((h * sin) + (w * cos))
     nH = int((h * cos) + (w * sin))
-
+    
     # adjust the rotation matrix to take into account translation
     M[0, 2] += (nW / 2) - cX
     M[1, 2] += (nH / 2) - cY
-
+    
     # perform the actual rotation and return the image
-    new_ship = cv2.warpAffine(ship, M, (nW, nH))
+    warped_ship = cv2.warpAffine(ship, M, (nW, nH))
+    warped_ship_mask = cv2.warpAffine(ship_mask, M, (nW, nH))
+    warped_ship[warped_ship_mask == [0, 0, 0]] = 0
 
     center_in_im = (int(bbx[0] + bbx[2] / 2), int(bbx[1] + bbx[3] / 2))
     x0 = int(center_in_im[0] - nW / 2)
-    x1 = x0 + new_ship.shape[1]
+    x1 = x0 + warped_ship.shape[1]
     y0 = int(center_in_im[1] - nH / 2)
-    y1 = y0 + new_ship.shape[0]
+    y1 = y0 + warped_ship.shape[0]
 
     mask = np.zeros(im.shape, dtype=np.uint8)
-    mask[y0 : y1, x0 : x1] = new_ship
+    mask[y0 : y1, x0 : x1] = warped_ship
 
     im[np.where(mask != [0, 0, 0])] = mask[np.where(mask != [0, 0, 0])]
 
@@ -85,13 +89,12 @@ outdir = '/workspaces/LostGANs/vis/'
 if not os.path.exists(outdir): os.makedirs(outdir)
 
 im = np.array(image.copy())
-angles = [320, 320, 320, 320, 310, 310, 310, 300, 290, 290, 290, 290, 290, 290, 290, 270, 270]
+angles = [320, 320, 320, 320, 323, 323, 323, 323, 323, 323, 325, 325, 325, 325, 327, 327, 327, 327, 327, 330, 330, 330, 330, 333, 333, 333, 333, 335, 335, 335, 335]
 bbx = labels.iloc[4]['BoundingBox']
 label = np.append(bbx, 320)
 for step, angle in enumerate(angles):
     im, label = move_ship(im, label, angle)
     im.save(os.path.join(outdir, f'{step}.png'))
 
-PIL.Image.fromarray(im)
 
 
